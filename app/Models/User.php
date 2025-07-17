@@ -5,18 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuids;
+    use HasRoles, HasApiTokens, HasFactory, Notifiable, HasUuids;
     protected $fillable = [
-        'username',
+        'nickname',
         'email',
         'password',
         'status_id',
@@ -33,28 +30,40 @@ class User extends Model
     ];
     protected $keyType = 'string';
     public $incrementing = false;
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'user_roles');
-    }
-    public function ratings(): HasMany
+    public function ratings()
     {
         return $this->hasMany(EditionUserRating::class);
     }
-    public function wishlists(): HasMany
+    public function wishlists()
     {
         return $this->hasMany(EditionWishlist::class);
     }
-    public function loans(): HasMany
+    public function loans()
     {
         return $this->hasMany(Loan::class);
     }
-    public function status(): BelongsTo
+    public function status()
     {
         return $this->belongsTo(Status::class);
     }
-    public function profile(): HasOne
+    public function profile()
     {
         return $this->hasOne(UserProfile::class);
     }
+    public function guardian()
+    {
+        return $this->hasOne(UserGuardian::class);
+    }
+    public function otp()
+    {
+        return $this->hasMany(OtpCode::class);
+    }
+    public function passwordResetToken()
+    {
+        return $this->hasMany(PasswordResetToken::class);
+    }
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class, 'user_roles');
+    // }
 }

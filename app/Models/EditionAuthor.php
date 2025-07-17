@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class EditionAuthor extends Model
 {
     use HasUuids;
-    protected $table = 'edition_authors';
     public $incrementing = false;
     protected $fillable = [
         'edition_id',

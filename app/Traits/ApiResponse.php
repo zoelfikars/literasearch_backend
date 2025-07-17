@@ -18,7 +18,7 @@ trait ApiResponse
         ];
         if ($data instanceof LengthAwarePaginator) {
             $items = $data->items();
-            $response['data'] = $items;
+            $response['result'] = $items;
             $response['meta'] = [
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
@@ -26,7 +26,7 @@ trait ApiResponse
                 'total' => $data->total(),
             ];
         } elseif ($data !== null) {
-            $response['data'] = $data;
+            $response['result'] = $data;
         }
         return response()->json($response, $code);
     }

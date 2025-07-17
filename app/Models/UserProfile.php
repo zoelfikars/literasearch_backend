@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 class UserProfile extends Model
 {
     use HasUuids;
-    protected $table = 'user_profiles';
     protected $primaryKey = 'user_id';
     public $incrementing = false;
     protected $fillable = [
@@ -23,6 +22,7 @@ class UserProfile extends Model
         'birth_date',
         'gender',
         'address',
+        'phone_number',
         'profile_picture_path',
         'identity_image_path',
         'selfie_image_path',

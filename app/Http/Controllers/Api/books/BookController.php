@@ -10,7 +10,7 @@ use App\Http\Resources\books\BookCollectionResource;
 use App\Http\Resources\books\BookResource;
 use App\Http\Resources\books\BookTrendingCollectionResource;
 use App\Http\Resources\libraries\LibraryCollectionResource;
-use App\Models\Book;
+use App\Models\BookTitle;
 use App\Models\Library;
 use App\Models\Subject;
 use App\Traits\ApiResponse;
@@ -27,7 +27,7 @@ class BookController extends Controller
         $order = $request->get('order', 'asc');
         $sort = $request->get('sort', 'id');
 
-        $data = Book::select(['id', 'title', 'author', 'cover_url'])
+        $data = BookTitle::select(['id', 'title', 'author', 'cover_url'])
             ->when($request->search, function ($query) use ($request) {
                 $query->where('title', 'like', '%' . $request->search . '%')
                     ->orWhere('author', 'like', '%' . $request->search . '%');
@@ -59,7 +59,7 @@ class BookController extends Controller
         $order = $request->get('order', 'desc');
 
         $range = $request->get('range', 'daily');
-        $books = Book::withCount([
+        $books = BookTitle::withCount([
             'ratings as rating_count' => function ($query) use ($range) {
                 $query->when(
                     $range === 'daily',
@@ -100,7 +100,7 @@ class BookController extends Controller
     }
     public function show($id)
     {
-        $book = Book::find($id);
+        $book = BookTitle::find($id);
         if (!is_null($book)) {
             DB::beginTransaction();
             try {
@@ -171,7 +171,7 @@ class BookController extends Controller
     }
     public function libraries($id, BookLibraryRequest $request)
     {
-        $book = Book::findOrFail($id);
+        $book = BookTitle::findOrFail($id);
         $lat = $request->get('lat', '0');
         $lon = $request->get('lon', '0');
 

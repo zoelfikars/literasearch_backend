@@ -19,14 +19,14 @@ return new class extends Migration {
             $table->integer('pages')->nullable();
             $table->text('subtitle')->nullable();
             $table->text('description')->nullable();
-            $table->uuid('book_id');
+            $table->uuid('book_title_id');
             $table->uuid('publisher_id')->nullable();
-            $table->uuid('langeuage_id')->nullable();
+            $table->uuid('language_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
+            $table->foreign('book_title_id')->references('id')->on('book_titles')->onDelete('cascade');
             $table->foreign('publisher_id')->references('id')->on('publishers')->nullOnDelete();
-            $table->foreign('langeuage_id')->references('id')->on('languages')->nullOnDelete();
+            $table->foreign('language_id')->references('id')->on('languages')->nullOnDelete();
         });
     }
     public function down(): void

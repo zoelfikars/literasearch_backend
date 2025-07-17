@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\books;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\books\StoreBookUserRatingRequest;
 use App\Http\Resources\books\BookUserRatingResource;
-use App\Models\BookUserRating;
+use App\Models\EditionUserRating;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +16,7 @@ class BookUserRatingController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 15);
-        $ratings = BookUserRating::with([
+        $ratings = EditionUserRating::with([
             'user:id,name',
             'book:id,title'
         ])
@@ -27,7 +27,7 @@ class BookUserRatingController extends Controller
     }
     public function store(StoreBookUserRatingRequest $request): JsonResponse
     {
-        $rating = BookUserRating::updateOrCreate(
+        $rating = EditionUserRating::updateOrCreate(
             [
                 'user_id' => $request->user_id,
                 'book_id' => $request->book_id,
@@ -45,7 +45,7 @@ class BookUserRatingController extends Controller
     }
     public function show($id): JsonResponse
     {
-        $rating = BookUserRating::with(['user', 'book'])->findOrFail($id);
+        $rating = EditionUserRating::with(['user', 'book'])->findOrFail($id);
         return $this->successResponse(
             new BookUserRatingResource($rating),
             'Detail rating berhasil ditampilkan.'
@@ -54,7 +54,7 @@ class BookUserRatingController extends Controller
     }
     public function destroy($id): JsonResponse
     {
-        BookUserRating::findOrFail($id)->delete();
+        EditionUserRating::findOrFail($id)->delete();
 
         return $this->successResponse(
             null,

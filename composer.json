@@ -8,9 +8,10 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-        "laravel/sanctum": "^4.1",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "league/csv": "^9.23",
+        "spatie/laravel-permission": "^6.20",
         "thiagoalessio/tesseract_ocr": "^2.13"
     },
     "require-dev": {
@@ -30,7 +31,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
          "files": [
-            "app/Helpers/GenderHelper.php"
+            "app/Helpers/GenderHelper.php",
+            "app/Helpers/OtpHelper.php"
         ]
     },
     "autoload-dev": {

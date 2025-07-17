@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Book;
+use App\Models\BookTitle;
 use Illuminate\Database\Seeder;
 use League\Csv\Reader;
 
@@ -26,7 +26,7 @@ class BookSeeder extends Seeder
 
         foreach ($csv->getRecords() as $index => $data) {
             try {
-                Book::updateOrCreate(
+                BookTitle::updateOrCreate(
                     ['isbn' => $data['ISBN']],
                     [
                         'title' => $data['Book-Title'],

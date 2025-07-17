@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 class Status extends Model
 {
     use HasFactory, HasUuids;
-    protected $table = 'statuses';
     protected $fillable = [
         'name',
         'description',

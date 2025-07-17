@@ -10,24 +10,20 @@ use Symfony\Component\HttpFoundation\Response;
 class CheckPermission
 {
     use ApiResponse;
-    public function handle(Request $request, Closure $next, array|string $permissions): Response
+    public function handle(Request $request, Closure $next, ...$permissions): Response
     {
-        $user = auth()->user();
+        $user = $request->user();
 
-        $permissions = is_array($permissions) ? $permissions : explode(',', $permissions);
+        if (!$user) {
+            return $this->setResponse('Anda belum melakukan login', null, 401);
+        }
 
-        $hasPermission = !$user ? false : $user->roles()->whereHas('permissions', function ($query) use ($permissions) {
-            if (is_array($permissions)) {
-                $query->whereIn('name', $permissions);
-            } else {
-                $query->where('name', $permissions);
-            }
+        $hasPermission = $user->roles()->whereHas('permissions', function ($query) use ($permissions) {
+            $query->whereIn('name', $permissions);
         })->exists();
 
-
-
         if (!$hasPermission) {
-            $this->setResponse('error', 'Anda tidak memiliki hak akses', null, 403);
+            return $this->setResponse('Anda tidak memiliki hak akses', null, 403);
         }
 
         return $next($request);

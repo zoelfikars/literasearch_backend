@@ -22,15 +22,15 @@ class Edition extends Model
         'pages',
         'subtitle',
         'description',
-        'book_id',
+        'edition_title_id',
         'publisher_id',
         'language_id'
     ];
     protected $keyType = 'string';
     public $incrementing = false;
-    public function book(): BelongsTo
+    public function title(): BelongsTo
     {
-        return $this->belongsTo(Book::class);
+        return $this->belongsTo(BookTitle::class);
     }
     public function publisher(): BelongsTo
     {
@@ -46,7 +46,7 @@ class Edition extends Model
     }
     public function subjects(): BelongsToMany
     {
-        return $this->belongsToMany(Subject::class, 'editions_subjects');
+        return $this->belongsToMany(Subject::class, 'books_subjects');
     }
     public function libraries(): BelongsToMany
     {

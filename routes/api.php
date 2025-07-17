@@ -8,10 +8,13 @@ Route::name('api.')->group(function () {
     Route::prefix('auth')->name('auth.')->group(function () {
         Route::post('/register', [AuthController::class, 'register'])->name('register');
         Route::post('/login', [AuthController::class, 'login'])->name('login');
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware(['auth:sanctum', 'check.revoked'])->group(function () {
             Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
             Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         });
+        Route::post('request-otp', [AuthController::class, 'requestOtp'])->middleware('throttle:3,1');
+        Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
+        Route::post('reset-password', [AuthController::class, 'resetPassword']);
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('profile')->name('profile.')->group(function () {
@@ -20,10 +23,8 @@ Route::name('api.')->group(function () {
             Route::post('/update', [UserProfileController::class, 'update'])->name('update');
         });
     });
-    Route::prefix('books')->name('books.')->group(function () {
-    });
-    Route::prefix('libraries')->name('libraries.')->group(function () {
-    });
+    Route::prefix('books')->name('books.')->group(function () {});
+    Route::prefix('libraries')->name('libraries.')->group(function () {});
 });
 
 // Route::name('api.')->group(function () {
@@ -54,7 +55,3 @@ Route::name('api.')->group(function () {
 
 //     // Route::apiResource('book-user-ratings', BookUserRatingController::class);
 // });
-
-
-
-
