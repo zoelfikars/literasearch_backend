@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class OtpService
 {
-    public static function generate(string $userId, string $email, string $nickname): void
+    public static function generate(string $userId, string $email, string $nickname, string $purpose): void
     {
         $existing = OtpCode::where('user_id', $userId)
             ->where('expires_at', '>', now())
@@ -24,34 +24,27 @@ class OtpService
         OtpCode::create([
             'user_id' => $userId,
             'otp' => $otp,
+            'purpose' => $purpose,
             'expires_at' => now()->addMinutes(5),
         ]);
         Mail::to($email, $nickname)->send(new OtpMail($otp));
     }
-    public static function validate(string $userId, string $otp): bool
+    public static function validate(string $userId, string $otp, string $purpose, string $condition): bool
     {
         $record = OtpCode::where('user_id', $userId)
             ->where('otp', $otp)
+            ->where('purpose', $purpose)
             ->where('expires_at', '>', now())
             ->first();
-        if ($record) {
-            $record->delete();
+        if ($record && $condition === 'validate') {
+            return true;
+        }
+        if ($record && $condition === 'update') {
+            $record->verified_at = now();
+            $record->expires_at = now();
+            $record->save();
             return true;
         }
         return false;
-    }
-    public static function createResetToken($userId): array
-    {
-        $token = Str::random(60);
-        $expires_at = now()->addMinutes(15);
-        PasswordResetToken::where('user_id', $userId)->delete();
-
-        PasswordResetToken::create([
-            'user_id' => $userId,
-            'token' => hash('sha256', $token),
-            'expires_at' => $expires_at,
-        ]);
-
-        return ['token' => $token, 'expires_at' => $expires_at];
     }
 }

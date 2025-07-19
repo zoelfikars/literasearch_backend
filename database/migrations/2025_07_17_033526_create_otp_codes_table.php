@@ -13,6 +13,8 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->string('otp');
             $table->timestamp('expires_at');
+            $table->timestamp('verified_at')->nullable();
+            $table->enum('purpose', ['email_verification', 'password_reset'])->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

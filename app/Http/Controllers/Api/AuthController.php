@@ -6,13 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\OtpRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\ResetPasswordRequest;
-use App\Http\Requests\VerifyOtpRequest;
+use App\Http\Requests\PasswordResetRequest;
 use App\Http\Resources\LoginResource;
 use App\Http\Resources\OtpResource;
-use App\Http\Resources\ProfileResource;
 use App\Models\OtpCode;
-use App\Models\PasswordResetToken;
+use App\Models\Status;
 use App\Models\User;
 use App\Services\OtpService;
 use App\Traits\ApiResponse;
@@ -28,6 +26,7 @@ class AuthController extends Controller
             'nickname' => $request->nickname,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'status_id' => Status::where('type', 'user')->where('name', 'pending_verification')->value('id'),
         ]);
 
         $ip = $request->ip();
@@ -74,7 +73,7 @@ class AuthController extends Controller
         $user->tokens()->where('id', $tokenResult->accessToken->id)->update(['ip_address' => $ip, 'platform' => $platform]);
         $message = 'Login berhasil';
 
-        $data = new LoginResource($token, $user, $expired);
+        $data = new LoginResource($token, $user);
 
         return $this->setResponse($message, $data, 200);
     }
@@ -91,16 +90,17 @@ class AuthController extends Controller
 
         return $this->setResponse('Berhasil logout', null, 200);
     }
-    public function profile()
+    public function user()
     {
-        $user = Auth::user()->load(['roles', 'status']);
+        $user = Auth::user();
         if (!$user) {
             return $this->setResponse('Belum ada user yang login', null, 401);
         }
-        $data = new ProfileResource($user);
+        $user = $user->load(['roles', 'status']);
+        $data = new LoginResource(null, $user);
         return $this->setResponse('Profil pengguna berhasil diambil', $data, 200);
     }
-    public function requestOtp(OtpRequest $request)
+    public function passwordResetRequestOtp(OtpRequest $request)
     {
         $user = User::where('email', $request->email)->first();
         if (!$user) {
@@ -113,7 +113,7 @@ class AuthController extends Controller
             ->first();
 
         if (!$lastOtp || $lastOtp->created_at->diffInSeconds(now()) >= 60) {
-            OtpService::generate($user->id, $request->email, $user->nickname);
+            OtpService::generate($user->id, $request->email, $user->nickname, 'password_reset');
         }
 
         return $this->setResponse(
@@ -121,43 +121,32 @@ class AuthController extends Controller
             new OtpResource($user),
         );
     }
-    public function verifyOtp(VerifyOtpRequest $request)
+    public function passwordResetValidateOtp(OtpRequest $request)
     {
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return $this->setResponse('Tidak ada user yang terdaftar dengan email ' . $request->email . ' di sistem', null, 404);
         }
 
-        if (!OtpService::validate($user->id, $request->otp)) {
+        if (!OtpService::validate($user->id, $request->otp, 'password_reset', 'validate')) {
             return $this->setResponse('Kode OTP tidak valid atau kadaluwarsa', null, 403);
         }
 
-        $resetToken = OtpService::createResetToken($user->id);
-
-        return $this->setResponse('Kode OTP berhasil di verifikasi', $resetToken);
+        return $this->setResponse('Kode OTP valid');
     }
-    public function resetPassword(ResetPasswordRequest $request)
+    public function passwordReset(PasswordResetRequest $request)
     {
         $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return $this->setResponse('Tidak ada user yang terdaftar dengan email ' . $request->email . ' di sistem', null, 404);
+        }
 
-        $record = PasswordResetToken::where('user_id', $user->id)
-            ->where('token', hash('sha256', $request->reset_token))
-            ->where('expires_at', '>', now())
-            ->first();
-
-        if (!$record) {
-            return $this->setResponse('Token tidak valid atau sudah kadaluwarsa', null, 403);
+        if (!OtpService::validate($user->id, $request->otp, 'password_reset', 'update')) {
+            return $this->setResponse('Kode OTP tidak valid atau kadaluwarsa', null, 403);
         }
 
         $user->password = bcrypt($request->password);
         $user->save();
-
-        $record->delete();
-
-        $user->tokens()->update([
-            'revoked_at' => now(),
-            'expires_at' => now(),
-        ]);
 
         return $this->setResponse('Password berhasil direset');
     }

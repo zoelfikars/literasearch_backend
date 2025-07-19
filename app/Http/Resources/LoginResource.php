@@ -7,10 +7,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class LoginResource extends JsonResource
 {
-    public function __construct($token, $resource, $expired)
+    // public function __construct($token, $resource, $expired)
+    public function __construct($token, $resource)
     {
         $this->token = $token;
-        $this->expired = $expired;
+        // $this->expired = $expired;
         parent::__construct($resource);
     }
     public function toArray(Request $request): array
@@ -22,7 +23,7 @@ class LoginResource extends JsonResource
                 'nickname' => $this->nickname,
                 'permissions' => $this->roles->flatMap(fn($role) => $role->permissions->pluck('name'))->unique()->values(),
             ],
-            'expires_at' => $this->expired,
+            // 'expires_at' => $this->expired,
         ];
     }
 }

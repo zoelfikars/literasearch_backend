@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class VerifyOtpRequest extends FormRequest
+class PasswordResetRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,6 +15,7 @@ class VerifyOtpRequest extends FormRequest
         return [
             'email' => 'required|email',
             'otp' => 'required|digits:6',
+            'password' => 'required|string|min:8|confirmed',
         ];
     }
 }

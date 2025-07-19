@@ -20,7 +20,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Otp Mail',
+            subject: config('app.name') . ' Password Reset OTP',
         );
     }
     public function content(): Content

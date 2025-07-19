@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Resources\SimpleOptionResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 
 class ProfileResource extends JsonResource
 {
@@ -16,7 +17,15 @@ class ProfileResource extends JsonResource
             'email' => $this->email,
             'account_status' => new SimpleOptionResource($this->status),
             'email_verified_at' => $this->email_verified_at,
-            'profile_picture' => $this->profile_picture_path,
+            'identity_complete' => $this->isProfileComplete(),
+            'guardian_complete' => $this->isGuardianComplete(),
+            'profile_picture' => $this->profile_picture_path
+                ? URL::signedRoute(
+                    'api.user.profile.picture',
+                    ['user' => $this],
+                    now()->addMinutes(10)
+                )
+                : null,
             'roles' => $this->roles->pluck('name'),
         ];
     }

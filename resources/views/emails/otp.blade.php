@@ -1,7 +1,7 @@
 <x-mail::message>
     Harap jangan berikan Kode OTP ini kepada siapapun!
 
-    Kode OTP anda adalah : <h1>{{ $otp }}</h1>
+    Kode OTP anda adalah : {{ $otp }}
 
     Kode ini hanya berlaku selama 5 menit.
     {{-- <x-mail::button :url="''">

@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('password');
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
-
+            $table->string('profile_picture_path')->nullable();
             $table->uuid('status_id')->nullable();
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();

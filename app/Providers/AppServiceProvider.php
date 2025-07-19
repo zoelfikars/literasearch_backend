@@ -4,8 +4,12 @@ namespace App\Providers;
 
 use App\Events\FileUploadedButDbFailed;
 use App\Listeners\DeleteUploadedFile;
+use App\Models\User;
+use App\Models\UserProfile;
+use App\Policies\UserPolicy;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
             ],
             DeleteUploadedFile::class,
         );
+        Gate::policy(User::class, UserPolicy::class);
     }
 }

@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Services;
+
 use App\Events\FileUploadedButDbFailed;
 use App\Models\User;
 use App\Models\UserProfile;
@@ -7,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
+
 class UserProfileService
 {
     protected OcrKtpService $ocrService;
@@ -117,5 +120,8 @@ class UserProfileService
             }
             throw $e;
         }
+    }
+    public function update() {
+        
     }
 }
