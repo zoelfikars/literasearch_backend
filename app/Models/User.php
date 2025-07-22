@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
@@ -9,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasRoles, HasApiTokens, HasFactory, Notifiable, HasUuids;
     protected $fillable = [
@@ -30,6 +31,10 @@ class User extends Authenticatable
     ];
     protected $keyType = 'string';
     public $incrementing = false;
+    public function sendCustomEmailVerificationNotification(string $platform)
+    {
+        $this->notify(new \App\Notifications\VerifyApiEmail($platform));
+    }
     public function ratings()
     {
         return $this->hasMany(EditionUserRating::class);
@@ -58,10 +63,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(OtpCode::class);
     }
-    public function passwordResetToken()
-    {
-        return $this->hasMany(PasswordResetToken::class);
-    }
     public function profileMissingFields(): array
     {
         if (!$this->profile) {
@@ -80,14 +81,22 @@ class User extends Authenticatable
         $missing = [];
         $profile = $this->profile;
 
-        if (!$profile->full_name) $missing[] = 'full_name';
-        if (!$profile->nik) $missing[] = 'nik';
-        if (!$profile->birth_place) $missing[] = 'birth_place';
-        if (!$profile->birth_date) $missing[] = 'birth_date';
-        if (!$profile->gender) $missing[] = 'gender';
-        if (!$profile->address) $missing[] = 'address';
-        if (!$profile->phone_number) $missing[] = 'phone_number';
-        if (!$profile->identity_image_path) $missing[] = 'identity_image_path';
+        if (!$profile->full_name)
+            $missing[] = 'full_name';
+        if (!$profile->nik)
+            $missing[] = 'nik';
+        if (!$profile->birth_place)
+            $missing[] = 'birth_place';
+        if (!$profile->birth_date)
+            $missing[] = 'birth_date';
+        if (!$profile->gender)
+            $missing[] = 'gender';
+        if (!$profile->address)
+            $missing[] = 'address';
+        if (!$profile->phone_number)
+            $missing[] = 'phone_number';
+        if (!$profile->identity_image_path)
+            $missing[] = 'identity_image_path';
 
         return $missing;
     }
@@ -114,14 +123,22 @@ class User extends Authenticatable
         $missing = [];
         $guardian = $this->guardian;
 
-        if (!$guardian->full_name) $missing[] = 'full_name';
-        if (!$guardian->nik) $missing[] = 'nik';
-        if (!$guardian->birth_place) $missing[] = 'birth_place';
-        if (!$guardian->birth_date) $missing[] = 'birth_date';
-        if (!$guardian->gender) $missing[] = 'gender';
-        if (!$guardian->address) $missing[] = 'address';
-        if (!$guardian->phone_number) $missing[] = 'phone_number';
-        if (!$guardian->identity_image_path) $missing[] = 'identity_image_path';
+        if (!$guardian->full_name)
+            $missing[] = 'full_name';
+        if (!$guardian->nik)
+            $missing[] = 'nik';
+        if (!$guardian->birth_place)
+            $missing[] = 'birth_place';
+        if (!$guardian->birth_date)
+            $missing[] = 'birth_date';
+        if (!$guardian->gender)
+            $missing[] = 'gender';
+        if (!$guardian->address)
+            $missing[] = 'address';
+        if (!$guardian->phone_number)
+            $missing[] = 'phone_number';
+        if (!$guardian->identity_image_path)
+            $missing[] = 'identity_image_path';
 
         return $missing;
     }

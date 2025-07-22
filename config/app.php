@@ -84,6 +84,9 @@ return [
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'id_ID'),
 
+    'frontend_url' => env('APP_FRONTEND_URL', 'http://localhost:8000'),
+    'app_deeplink' => env('APP_APP_DEEPLINK', 'literasearch://verify-email'),
+
     /*
     |--------------------------------------------------------------------------
     | Encryption Key

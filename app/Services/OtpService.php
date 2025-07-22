@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class OtpService
 {
-    public static function generate(string $userId, string $email, string $nickname, string $purpose): void
+    public static function generate(string $userId, string $email, string $nickname, string $purpose)
     {
         $existing = OtpCode::where('user_id', $userId)
             ->where('expires_at', '>', now())
@@ -21,28 +21,39 @@ class OtpService
         }
         $otp = random_int(100000, 999999);
         OtpCode::where('user_id', $userId)->delete();
-        OtpCode::create([
+        $new_otp =  OtpCode::create([
             'user_id' => $userId,
             'otp' => $otp,
             'purpose' => $purpose,
             'expires_at' => now()->addMinutes(5),
         ]);
         Mail::to($email, $nickname)->send(new OtpMail($otp));
+        return $new_otp->expires_at;
     }
-    public static function validate(string $userId, string $otp, string $purpose, string $condition): bool
+    public static function validate(string $userId, string $otp, string $purpose, string $condition)
     {
-        $record = OtpCode::where('user_id', $userId)
-            ->where('otp', $otp)
-            ->where('purpose', $purpose)
-            ->where('expires_at', '>', now())
-            ->first();
-        if ($record && $condition === 'validate') {
-            return true;
+        if ($condition === 'validate') {
+            $record = OtpCode::where('user_id', $userId)
+                ->where('otp', $otp)
+                ->where('purpose', $purpose)
+                ->where('expires_at', '>', now())
+                ->first();
         }
-        if ($record && $condition === 'update') {
+        if ($condition === 'update') {
+            $record = OtpCode::where('user_id', $userId)
+                ->where('otp', $otp)
+                ->where('purpose', $purpose)
+                ->whereNotNull('verified_at')
+                ->first();
+        }
+        if ($record && $condition === 'validate') {
             $record->verified_at = now();
             $record->expires_at = now();
             $record->save();
+            return true;
+        }
+
+        if ($record && $condition === 'update') {
             return true;
         }
         return false;

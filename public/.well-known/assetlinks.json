@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "literasearch_flutter",
+    "package_name": "com.example.literasearch_flutter",
+    "sha256_cert_fingerprints":
+    ["09:E8:CB:22:3A:4E:3E:1F:EE:9A:23:3E:0B:1F:03:E6:A0:F8:7E:C8:1E:91:C9:50:2A:BB:F5:FB:40:02:2B:47"]
+  }
+}]

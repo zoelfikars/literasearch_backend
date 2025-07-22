@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IdentityProfileRequest;
-use App\Http\Requests\SelfieProfileRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\ProfileResource;
 use App\Models\User;
@@ -35,7 +34,7 @@ class UserProfileController extends Controller
         $data = new ProfileResource($user);
         return $this->setResponse('Profil pengguna berhasil diambil', $data, 200);
     }
-    public function update(UpdateProfileRequest $request): JsonResponse
+    public function update(UpdateProfileRequest $request)
     {
         try {
             $user = Auth::user()->load(['roles', 'status']);
@@ -55,7 +54,7 @@ class UserProfileController extends Controller
             $user->save();
             $data = new ProfileResource($user);
 
-            return $this->setResponse('Profil berhasil diperbarui',  $data);
+            return $this->setResponse('Profil berhasil diperbarui', $data);
         } catch (Throwable $e) {
             dd($e->getMessage());
             return $this->setResponse('Terjadi kesalahan saat memperbarui profil', null, 500, 'error');
@@ -74,7 +73,7 @@ class UserProfileController extends Controller
             ['Content-Type' => 'image/jpeg']
         );
     }
-    public function uploadIdentity(IdentityProfileRequest $request): JsonResponse
+    public function uploadIdentity(IdentityProfileRequest $request)
     {
         try {
             $profile = $this->userProfileService->uploadIdentity(

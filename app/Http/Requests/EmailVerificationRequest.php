@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ValidateOtpRequest extends FormRequest
+class EmailVerificationRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -13,8 +13,7 @@ class ValidateOtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'otp' => 'required|digits:6',
+            'platform' => 'required|in:web,mobile',
         ];
     }
 }
