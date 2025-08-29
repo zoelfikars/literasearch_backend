@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Str;
 
 class Subject extends Model
@@ -23,6 +22,11 @@ class Subject extends Model
     }
     public function editions()
     {
-        return $this->belongsToMany(Edition::class, 'edition_subjects', 'subject_id', 'edition_id');
+        return $this->belongsToMany(
+            Edition::class,
+            'edition_subjects',
+            'subject_id',
+            'edition_id'
+        )->withTimestamps();
     }
 }

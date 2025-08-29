@@ -13,8 +13,8 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->primary(['subject_id', 'edition_id']);
-            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
-            $table->foreign('edition_id')->references('id')->on('editions')->onDelete('cascade');
+            $table->foreign('subject_id')->references('id')->on('subjects')->cascadeOnDelete();
+            $table->foreign('edition_id')->references('id')->on('editions')->cascadeOnDelete();
         });
     }
     public function down(): void

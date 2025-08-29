@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Pivots;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Edition;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class EditionWishlist extends Model
+class EditionWishlist extends Pivot
 {
-    use HasFactory;
     public function edition(): BelongsTo
     {
         return $this->belongsTo(Edition::class);

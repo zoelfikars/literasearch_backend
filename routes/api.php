@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\LibrarianApplicationController;
 use App\Http\Controllers\Api\LibraryApplicationController;
 use App\Http\Controllers\Api\LibraryController;
 use App\Http\Controllers\Api\Management\AuthorController;
+use App\Http\Controllers\Api\Management\AuthorRoleController;
 use App\Http\Controllers\Api\Management\BookSubjectController;
 use App\Http\Controllers\Api\Management\BookTitleController;
 use App\Http\Controllers\Api\Management\LanguageController;
@@ -66,9 +68,11 @@ Route::name('api.')->group(function () {
         Route::get('/', [StatusController::class, 'list'])->name('list');
     });
     Route::prefix('books')->name('books.')->group(function () {
-        Route::get('/', [LibraryController::class, 'list'])->name('list');
-        Route::get('/libraries', [LibraryController::class, 'libraries'])->name('libraries');
-        Route::get('/libraries', [LibraryController::class, 'libraries'])->name('list');
+        Route::get('/', [BookController::class, 'list'])->name('list');
+        Route::get('/{id}/cover', [BookController::class, 'serveCover'])
+            ->name('cover')
+            ->middleware(['signed']);
+        Route::get('/libraries', [BookController::class, 'libraries'])->name('libraries');
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/', [ManageBookController::class, 'store'])->name('store');
             Route::prefix('titles')->name('titles.')->group(function () {
@@ -96,10 +100,14 @@ Route::name('api.')->group(function () {
                 Route::delete('/{publisher}', [PublisherController::class, 'destroy'])->name('destroy');
             });
             Route::prefix('authors')->name('authors.')->group(function () {
+                Route::get('/roles', [AuthorRoleController::class, 'list'])->name('list');
                 Route::get('/', [AuthorController::class, 'list'])->name('list');
                 Route::post('/', [AuthorController::class, 'store'])->name('store');
                 Route::put('/{author}', [AuthorController::class, 'update'])->name('update');
                 Route::delete('/{author}', [AuthorController::class, 'destroy'])->name('destroy');
+            });
+            Route::middleware(['role:Verified'])->group(function () {
+                Route::post('/{edition}/rate', [BookController::class, 'rate'])->name('rate');
             });
         });
     });

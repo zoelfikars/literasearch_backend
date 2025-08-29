@@ -4,28 +4,36 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\URL;
 
 class LibraryResource extends JsonResource
 {
-    public function toArray(Request $request)
+    public function toArray(Request $request): array
     {
+
+        $avg = (float) ($this->ratings_avg_rating ?? 0);
+        $count = (int) ($this->ratings_count ?? 0);
+
+        $user = $request->user('sanctum')?->id;
+        $isLibrarian = $this->whenLoaded('librarians', function ($librarians) use ($user) {
+            return $librarians->pluck('id')->contains($user);
+        });
+
         $data = [
-            "id" => $this->id,
-            "name" => $this->name,
-            "phone" => $this->phone_number,
-            "description" => $this->description,
-            "address" => $this->address,
-            "latitude" => $this->latitude,
-            "longitude" => $this->longitude,
-            "is_recruiting" => $this->is_recruiting,
+            'id' => $this->id,
+            'name' => $this->name,
+            'phone' => $this->phone_number,
+            'address' => $this->address,
+            'rating' => round($avg, 2),
+            'rating_count' => $count,
+            'physical_book_count' => 0,
+            'distance' => format_distance($this->distance),
         ];
-        if (!empty($this->latestApprovedByExpiration->expiration_date)) {
-            $data['expiration_date'] = format_date($this->latestApprovedByExpiration->expiration_date);
+        if ($this->has_inspection) {
+            $latestPending = $this->whenLoaded('latestPending');
+            $inspectionId = $latestPending?->id;
+            $data['inspection_id'] = $inspectionId;
         }
-        if (!empty($this->image_path)) {
-            $data['image'] = $this->cover_signed_url;
-        }
+        $data['is_librarian'] = $isLibrarian;
         return $data;
     }
 }

@@ -11,13 +11,13 @@ return new class extends Migration {
             $table->uuid('edition_id');
             $table->uuid('author_id');
             $table->uuid('role_id');
-            $table->foreign('role_id')->references('id')->on('author_roles');
-            $table->string('subtitle')->nullable();
             $table->timestamps();
 
-            $table->primary(['edition_id', 'author_id']);
+            $table->foreign('role_id')->references('id')->on('author_roles')->cascadeOnDelete();
             $table->foreign('edition_id')->references('id')->on('editions')->cascadeOnDelete();
             $table->foreign('author_id')->references('id')->on('authors')->cascadeOnDelete();
+
+            $table->unique(['edition_id', 'author_id', 'role_id']);
         });
     }
     public function down(): void

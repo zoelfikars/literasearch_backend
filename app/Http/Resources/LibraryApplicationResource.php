@@ -13,7 +13,7 @@ class LibraryApplicationResource extends JsonResource
         $data = [
             'id' => $this->id,
             'library' => $this->whenLoaded('library', function () {
-                return new LibraryResource($this->library);
+                return new DetailLibraryResource($this->library);
             }),
             'status' => $this->whenLoaded('status', function () {
                 return $this->status->description;

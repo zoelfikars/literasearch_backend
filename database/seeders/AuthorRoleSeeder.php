@@ -4,31 +4,57 @@ namespace Database\Seeders;
 
 use App\Models\AuthorRole;
 use Illuminate\Database\Seeder;
+use Str;
 
 class AuthorRoleSeeder extends Seeder
 {
     public function run(): void
     {
-        $roles = [
-            ['name' => 'author', 'display_name' => 'Penulis'],
-            ['name' => 'co_author', 'display_name' => 'Rekan Penulis'],
-            ['name' => 'editor', 'display_name' => 'Penyunting'],
-            ['name' => 'translator', 'display_name' => 'Penerjemah'],
-            ['name' => 'illustrator', 'display_name' => 'Ilustrator'],
-            ['name' => 'foreword_author', 'display_name' => 'Penulis Kata Pengantar'],
-            ['name' => 'afterword_author', 'display_name' => 'Penulis Kata Penutup'],
-            ['name' => 'reviewer', 'display_name' => 'Reviewer'],
-            ['name' => 'contributor', 'display_name' => 'Kontributor'],
-            ['name' => 'compiler', 'display_name' => 'Penyusun'],
-            ['name' => 'supervisor', 'display_name' => 'Pembimbing'],
+        $rows = [
+            // Penulisan & penyuntingan
+            ['name' => 'Penulis'],
+            ['name' => 'Co-penulis'],
+            ['name' => 'Editor'],
+            ['name' => 'Editor Seri'],
+            ['name' => 'Editor Volume'],
+            ['name' => 'Penyusun (Compiler)'],
+            ['name' => 'Penyunting Teknis'],
+            ['name' => 'Revisor/Pemutakhir'],
+
+            // Terjemahan & adaptasi
+            ['name' => 'Penerjemah'],
+            ['name' => 'Adaptor'],
+
+            // Ilustrasi & visual
+            ['name' => 'Ilustrator'],
+            ['name' => 'Fotografer'],
+            ['name' => 'Desainer Sampul'],
+            ['name' => 'Kartografer (Peta)'],
+
+            // Materi pendamping
+            ['name' => 'Penulis Prakata (Foreword)'],
+            ['name' => 'Penulis Kata Pengantar'],
+            ['name' => 'Penulis Pengantar (Introduction)'],
+            ['name' => 'Penulis Epilog/Afterword'],
+            ['name' => 'Penulis Anotasi'],
+            ['name' => 'Penyusun Indeks'],
+            ['name' => 'Komentator'],
+            ['name' => 'Narator (Audio)'],
+
+            // Kontributor umum
+            ['name' => 'Kontributor'],
+            ['name' => 'Peneliti'],
+            ['name' => 'Konsultan'],
+            ['name' => 'Penasihat'],
+            ['name' => 'Koordinator'],
         ];
-
-        foreach ($roles as $role) {
-            AuthorRole::firstOrCreate([
-                'name' => $role['name'],
-                'display_name' => $role['display_name'],
-            ]);
+        foreach ($rows as $row) {
+            AuthorRole::updateOrCreate(
+                [
+                    'name' => $row['name'],
+                    'slug' => Str::appSlug($row['name']),
+                ]
+            );
         }
-
     }
 }

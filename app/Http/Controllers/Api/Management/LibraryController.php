@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LibraryApplicationExtendRequest;
 use App\Http\Requests\LibraryEditRequest;
 use App\Http\Resources\LibraryApplicationResource;
-use App\Http\Resources\LibraryResource;
+use App\Http\Resources\DetailLibraryResource;
 use App\Models\Library;
 use App\Models\LibraryApplication;
 use App\Models\Status;
@@ -50,7 +50,7 @@ class LibraryController extends Controller
             $library->update($data);
             $data = $library->load('latestApprovedByExpiration');
             DB::commit();
-            return $this->setResponse("Data perpustakaan berhasil diperbarui", new LibraryResource($data), 200);
+            return $this->setResponse("Data perpustakaan berhasil diperbarui", new DetailLibraryResource($data), 200);
         } catch (Exception $e) {
             DB::rollBack();
             if ($imagePath) {

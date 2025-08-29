@@ -165,8 +165,9 @@ return [
         'description' => 'Deskripsi',
         'publisher_id' => 'Penerbit',
         'language_id' => 'Bahasa',
-        'author_ids' => 'Daftar Penulis',
-        'author_ids.*' => 'Penulis',
+        'contributors' => 'Kontributor',
+        'contributors.*.author_id' => 'Penulis',
+        'contributors.*.role_id' => 'Peran',
         'subject_ids' => 'Daftar Tema',
         'subject_ids.*' => 'Tema',
         'stock' => 'Stok',
@@ -179,9 +180,9 @@ return [
         // subject
         'subject' => 'Tema Buku',
         // publisher
-        'city'=> 'Nama Kota/Kabupaten',
+        'city' => 'Nama Kota/Kabupaten',
         // author
-        'author_name'=> 'Nama Kontributor',
-        'disambiguator'=> 'Disambiguator',
+        'author_name' => 'Nama Kontributor',
+        'disambiguator' => 'Disambiguator',
     ],
 ];

@@ -8,12 +8,10 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('edition_libraries', function (Blueprint $table) {
-            $table->uuid('id')->primary();
             $table->uuid('edition_id');
             $table->uuid('library_id');
             $table->integer('stock_total');
             $table->integer('stock_available');
-            $table->string('ebook_path');
             $table->timestamps();
 
             $table->unique(['edition_id', 'library_id']);

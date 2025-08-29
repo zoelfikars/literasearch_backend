@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Pivots\EditionRating;
+use App\Models\Pivots\EditionWishlist;
 use App\Notifications\VerifyApiEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -79,6 +81,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Library::class, 'owner_id');
     }
+    public function libraryRatings()
+    {
+        return $this->hasMany(LibraryRating::class, 'user_id', 'id');
+    }
     public function ratedLibraries()
     {
         return $this->belongsToMany(Library::class, 'library_ratings')
@@ -93,4 +99,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(LibraryLibrarian::class, 'user_id');
     }
+
+    public function editionRatings()
+    {
+        return $this->hasMany(EditionRating::class, 'user_id', 'id');
+    }
+    public function ratedEditions()
+    {
+        return $this->belongsToMany(Edition::class, 'edition_ratings', 'user_id', 'edition_id')
+            ->withPivot(['rating'])
+            ->withTimestamps();
+    }
+
 }

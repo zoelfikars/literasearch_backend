@@ -14,9 +14,10 @@ return new class extends Migration {
             $table->integer('edition_number')->nullable();
             $table->date('publication_date')->nullable();
             $table->text('cover')->nullable();
-            $table->integer('pages')->nullable();
+            $table->integer('pages');
             $table->text('subtitle')->nullable();
             $table->text('description')->nullable();
+            $table->string('file_path')->nullable();
             $table->uuid('book_title_id');
             $table->uuid('publisher_id')->nullable();
             $table->uuid('language_id')->nullable();

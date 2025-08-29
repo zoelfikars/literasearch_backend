@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Pivots;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Author;
+use App\Models\AuthorRole;
+use App\Models\Edition;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class EditionAuthor extends Model
+class EditionAuthor extends Pivot
 {
-    use HasUuids;
-    public $incrementing = false;
     protected $fillable = [
         'edition_id',
         'author_id',
-        'role',
+        'role_id',
         'subtitle',
     ];
     public function edition()

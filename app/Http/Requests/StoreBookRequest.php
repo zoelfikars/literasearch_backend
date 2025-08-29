@@ -15,19 +15,20 @@ class StoreBookRequest extends FormRequest
             'edition_number' => 'required|integer|min:1',
             'publication_date' => 'required|date',
             'cover' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'file' => 'required|nullable|mimes:pdf|max:10240',
+            'file' => 'nullable|mimes:pdf|max:204800',
             'pages' => 'required|integer|min:1',
             'subtitle' => 'nullable|string',
             'description' => 'nullable|string',
 
-            'title_id' => 'required|exists:titles,id|uuid',
+            'title_id' => 'required|exists:book_titles,id|uuid',
             'language_id' => 'required|exists:languages,id|uuid',
             'publisher_id' => 'required|uuid|exists:publishers,id',
 
-            'author_ids' => 'required|array',
-            'author_ids.*' => 'uuid|exists:authors,id',
             'subject_ids' => 'required|array',
             'subject_ids.*' => 'uuid|exists:subjects,id',
+            'contributors' => ['required', 'array', 'min:1'],
+            'contributors.*.author_id' => ['required', 'uuid', 'exists:authors,id'],
+            'contributors.*.role_id' => ['required', 'uuid', 'exists:author_roles,id'],
         ];
     }
 }

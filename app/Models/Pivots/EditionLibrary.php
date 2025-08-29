@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Pivots;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Edition;
+use App\Models\Library;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class EditionLibrary extends Model
+class EditionLibrary extends Pivot
 {
-    use HasUuids;
-    public $incrementing = false;
     protected $fillable = [
         'edition_id',
         'library_id',

@@ -7,9 +7,10 @@ use App\Http\Requests\CommentRequest;
 use App\Http\Requests\LibraryFilterRequest;
 use App\Http\Requests\RateRequest;
 use App\Http\Resources\BookCollectionResource;
+use App\Http\Resources\BookResource;
 use App\Http\Resources\CommentResource;
-use App\Http\Resources\LibraryCollectionResource;
 use App\Http\Resources\LibraryResource;
+use App\Http\Resources\DetailLibraryResource;
 use App\Models\Library;
 use App\Services\BookListService;
 use App\Services\LibraryListService;
@@ -26,7 +27,7 @@ class LibraryController extends Controller
     {
         $user = $request->user('sanctum');
         $libraries = $service->list($request, $user);
-        $data = LibraryCollectionResource::collection($libraries);
+        $data = LibraryResource::collection($libraries);
         return $this->setResponse('Berhasil menampilkan perpustakaan.', $data);
     }
     function show($id)
@@ -35,7 +36,7 @@ class LibraryController extends Controller
         if (!$library) {
             return $this->setErrorResponse('Perpustakaan tidak ditemukan.', 404);
         }
-        $data = new LibraryResource($library);
+        $data = new DetailLibraryResource($library);
         return $this->setResponse('Berhasil menampilkan detail perpustakaan', $data);
     }
     public function serveLibraryImage(Request $request, $id)
@@ -150,7 +151,7 @@ class LibraryController extends Controller
             return $this->setErrorResponse('Perpustakaan tidak ditemukan.', 404);
         }
         $books = $service->list($request, $library ?? null);
-        $data = BookCollectionResource::collection($books);
+        $data = BookResource::collection($books);
         return $this->setResponse('Berhasil menampilkan buku.', $data);
     }
 }

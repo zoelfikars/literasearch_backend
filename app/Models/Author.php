@@ -27,8 +27,17 @@ class Author extends Model
             ->orWhere('disambiguator', 'like', $like)
         ;
     }
-    public function editions(): BelongsToMany
+    public function editions()
     {
-        return $this->belongsToMany(Edition::class, 'edition_authors')->withPivot('role', 'subtitle');
+        return $this->belongsToMany(Edition::class, 'edition_authors', 'author_id', 'edition_id')
+            ->withPivot(['role_id'])
+            ->withTimestamps();
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(AuthorRole::class, 'edition_authors', 'author_id', 'role_id')
+            ->withPivot(['edition_id'])
+            ->withTimestamps();
     }
 }
