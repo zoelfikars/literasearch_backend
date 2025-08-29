@@ -10,13 +10,14 @@ return new class extends Migration {
         Schema::create('edition_authors', function (Blueprint $table) {
             $table->uuid('edition_id');
             $table->uuid('author_id');
-            $table->string('role')->nullable();
+            $table->uuid('role_id');
+            $table->foreign('role_id')->references('id')->on('author_roles');
             $table->string('subtitle')->nullable();
             $table->timestamps();
 
             $table->primary(['edition_id', 'author_id']);
-            $table->foreign('edition_id')->references('id')->on('editions')->onDelete('cascade');
-            $table->foreign('author_id')->references('id')->on('authors')->onDelete('cascade');
+            $table->foreign('edition_id')->references('id')->on('editions')->cascadeOnDelete();
+            $table->foreign('author_id')->references('id')->on('authors')->cascadeOnDelete();
         });
     }
     public function down(): void

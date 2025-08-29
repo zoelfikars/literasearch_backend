@@ -9,7 +9,7 @@ use App\Http\Resources\LoginResource;
 use App\Models\Status;
 use App\Models\User;
 use App\Traits\ApiResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -32,7 +32,7 @@ class AuthController extends Controller
         $token = $tokenResult->plainTextToken;
         $user->tokens()->where('id', $tokenResult->accessToken->id)->update(['ip_address' => $ip, 'platform' => $platform]);
         $user->syncRoles('user');
-        $data = new LoginResource($token, $user, $expired);
+        $data = new LoginResource($token, $user);
         return $this->setResponse('Pendaftaran akun berhasil', $data, 201);
     }
     public function login(LoginRequest $request)
@@ -72,9 +72,9 @@ class AuthController extends Controller
 
         return $this->setResponse($message, $data, 200);
     }
-    public function logout()
+    public function logout(Request $request)
     {
-        $token = Auth::user()->currentAccessToken();
+        $token = $request->user()->currentAccessToken();
         if (!$token) {
             return $this->setResponse('Token tidak ditemukan', null, 404);
         }
@@ -85,9 +85,9 @@ class AuthController extends Controller
 
         return $this->setResponse('Berhasil logout', null, 200);
     }
-    public function user()
+    public function user(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         if (!$user) {
             return $this->setResponse('Belum ada user yang login', null, 401);
         }

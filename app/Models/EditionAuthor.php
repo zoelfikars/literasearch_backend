@@ -23,4 +23,8 @@ class EditionAuthor extends Model
     {
         return $this->belongsTo(Author::class);
     }
+    public function role()
+    {
+        return $this->belongsTo(AuthorRole::class, 'role_id');
+    }
 }

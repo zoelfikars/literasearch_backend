@@ -9,8 +9,8 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nickname',50)->nullable();
-            $table->string('email',191)->unique()->nullable();
+            $table->string('nickname', 50)->nullable();
+            $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->foreign('status_id')->references('id')->on('statuses')->onDelete('set null');
+            $table->softDeletes();
         });
     }
     public function down(): void

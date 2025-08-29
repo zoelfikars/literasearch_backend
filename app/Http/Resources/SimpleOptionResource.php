@@ -11,7 +11,7 @@ class SimpleOptionResource extends JsonResource
     {
         $result = [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => $this->name ?? $this->nickname,
         ];
         if (!empty($this->description)) {
             $result['description'] = $this->description;

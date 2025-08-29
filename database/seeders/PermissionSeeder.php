@@ -11,8 +11,8 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'approve_librarian_applications',
-            'approve_membership_applications',
+            'review_library_applications',
+            'review_membership_applications',
             'manage_own_library',
             'manage_books',
             'view_books',
@@ -21,6 +21,8 @@ class PermissionSeeder extends Seeder
             'borrow_digital_books',
             'rate_books',
             'wishlist_books',
+            'request_librarian_application',
+            'request_member_application',
         ];
 
         foreach ($permissions as $permission) {

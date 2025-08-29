@@ -13,10 +13,11 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string|min:8',
-            'remember' => 'sometimes|boolean',
-            'platform' => 'required|in:web,mobile',
+            "email" => "required|email",
+            // "password" => "required|string|min:8",
+            "password" => "required|string|min:3",
+            "remember" => "sometimes|boolean",
+            "platform" => "required|in:web,mobile",
         ];
     }
 }

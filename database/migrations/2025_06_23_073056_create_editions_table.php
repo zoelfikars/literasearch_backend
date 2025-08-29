@@ -14,8 +14,6 @@ return new class extends Migration {
             $table->integer('edition_number')->nullable();
             $table->date('publication_date')->nullable();
             $table->text('cover')->nullable();
-            $table->text('file_path')->nullable();
-            $table->boolean('is_public')->default(false);
             $table->integer('pages')->nullable();
             $table->text('subtitle')->nullable();
             $table->text('description')->nullable();
@@ -24,9 +22,13 @@ return new class extends Migration {
             $table->uuid('language_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('book_title_id')->references('id')->on('book_titles')->onDelete('cascade');
+            $table->foreign('book_title_id')->references('id')->on('book_titles')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
             $table->foreign('publisher_id')->references('id')->on('publishers')->nullOnDelete();
             $table->foreign('language_id')->references('id')->on('languages')->nullOnDelete();
+            $table->softDeletes();
         });
     }
     public function down(): void

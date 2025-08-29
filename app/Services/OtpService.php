@@ -13,12 +13,9 @@ class OtpService
 {
     public static function generate(string $userId, string $email, string $nickname, string $purpose)
     {
-        $existing = OtpCode::where('user_id', $userId)
-            ->where('expires_at', '>', now())
-            ->first();
-        if ($existing) {
-            return;
-        }
+        OtpCode::where('user_id', $userId)
+            ->where('purpose', $purpose)
+            ->delete();
         $otp = random_int(100000, 999999);
         OtpCode::where('user_id', $userId)->delete();
         $new_otp =  OtpCode::create([

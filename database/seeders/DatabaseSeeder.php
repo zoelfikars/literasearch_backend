@@ -14,10 +14,15 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RolePermissionSeeder::class,
             AdminSeeder::class,
+            SubjectSeeder::class,
+            LanguageSeeder::class,
+            AuthorRoleSeeder::class,
+            AuthorSeeder::class,
             // LibrarySeeder::class,
             // BookSeeder::class,
             // UserSeeder::class,
             // UserRatingSeeder::class,
+            ClearPrivateFolderSeeder::class, // jangan dipake kalo udah deploy.
         ]);
     }
 }

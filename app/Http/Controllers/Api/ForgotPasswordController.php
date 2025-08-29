@@ -22,14 +22,7 @@ class ForgotPasswordController extends Controller
             return $this->setResponse('Tidak ada user yang terdaftar dengan email ' . $request->email . ' di sistem', null, 404);
         }
 
-        $lastOtp = OtpCode::where('user_id', $user->id)
-            ->where('expires_at', '>', now())
-            ->latest()
-            ->first();
-
-        if (!$lastOtp || $lastOtp->created_at->diffInSeconds(now()) >= 60) {
-            $expires_at = OtpService::generate($user->id, $request->email, $user->nickname, 'password_reset');
-        }
+        $expires_at = OtpService::generate($user->id, $request->email, $user->nickname, 'password_reset');
 
         return $this->setResponse(
             'Kode OTP berhasil dikirim',

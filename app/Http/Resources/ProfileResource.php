@@ -17,8 +17,7 @@ class ProfileResource extends JsonResource
             'email' => $this->email,
             'account_status' => new SimpleOptionResource($this->status),
             'email_verified_at' => $this->email_verified_at,
-            'identity_complete' => $this->isProfileComplete(),
-            'guardian_complete' => $this->isGuardianComplete(),
+            'identity_complete' => $this->identity !== null ?? false,
             'profile_picture' => $this->profile_picture_path
                 ? URL::signedRoute(
                     'api.user.profile.picture',

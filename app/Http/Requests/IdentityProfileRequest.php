@@ -13,7 +13,7 @@ class IdentityProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'identity_image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:10240'],
+            "identity_image" => ["required", "image", "mimes:jpg,jpeg,png", "max:10240"],
         ];
     }
 }

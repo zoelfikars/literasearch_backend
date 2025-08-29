@@ -19,7 +19,7 @@ if (!function_exists('convert_gender_to_indonesian')) {
         $genderLower = mb_strtolower(trim($gender), 'UTF-8');
 
         if ($genderLower === 'male') {
-            return 'Laki-laki';
+            return 'Laki-Laki';
         } elseif ($genderLower === 'female') {
             return 'Perempuan';
         }

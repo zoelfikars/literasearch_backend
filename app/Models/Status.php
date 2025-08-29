@@ -25,7 +25,7 @@ class Status extends Model
     }
     public function librarianApplication()
     {
-        return $this->hasMany(LibrarianApplication::class);
+        return $this->hasMany(LibraryApplication::class);
     }
     public function membershipApplication()
     {

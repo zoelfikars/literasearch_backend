@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyApiEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -12,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasRoles, HasApiTokens, HasFactory, Notifiable, HasUuids;
+    use HasRoles, HasApiTokens, HasFactory, Notifiable, HasUuids, SoftDeletes;
     protected $fillable = [
         'nickname',
         'email',
@@ -33,11 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public $incrementing = false;
     public function sendCustomEmailVerificationNotification(string $platform)
     {
-        $this->notify(new \App\Notifications\VerifyApiEmail($platform));
-    }
-    public function ratings()
-    {
-        return $this->hasMany(EditionUserRating::class);
+        $this->notify(new VerifyApiEmail($platform));
     }
     public function wishlists()
     {
@@ -51,100 +49,48 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Status::class);
     }
-    public function profile()
+    public function identity()
     {
-        return $this->hasOne(UserProfile::class);
-    }
-    public function guardian()
-    {
-        return $this->hasOne(UserGuardian::class);
+        return $this->hasOne(UserIdentity::class);
     }
     public function otp()
     {
         return $this->hasMany(OtpCode::class);
     }
-    public function profileMissingFields(): array
+    public function managedLibraries()
     {
-        if (!$this->profile) {
-            return [
-                'full_name',
-                'nik',
-                'birth_place',
-                'birth_date',
-                'gender',
-                'address',
-                'phone_number',
-                'identity_image_path'
-            ];
-        }
-
-        $missing = [];
-        $profile = $this->profile;
-
-        if (!$profile->full_name)
-            $missing[] = 'full_name';
-        if (!$profile->nik)
-            $missing[] = 'nik';
-        if (!$profile->birth_place)
-            $missing[] = 'birth_place';
-        if (!$profile->birth_date)
-            $missing[] = 'birth_date';
-        if (!$profile->gender)
-            $missing[] = 'gender';
-        if (!$profile->address)
-            $missing[] = 'address';
-        if (!$profile->phone_number)
-            $missing[] = 'phone_number';
-        if (!$profile->identity_image_path)
-            $missing[] = 'identity_image_path';
-
-        return $missing;
+        return $this->belongsToMany(Library::class, 'library_librarians')
+            ->withPivot(['is_active'])
+            ->withTimestamps();
+    }
+    public function managedLibrariesActive()
+    {
+        return $this->belongsToMany(Library::class, 'library_librarians')
+            ->withPivot(['is_active'])
+            ->wherePivot('is_active', true)
+            ->withTimestamps();
     }
 
-    public function isProfileComplete(): bool
+    public function librarianApplications()
     {
-        return count($this->profileMissingFields()) === 0;
+        return $this->hasMany(LibrarianApplication::class);
     }
-    public function guardianMissingFields(): array
+    public function owners()
     {
-        if (!$this->guardian) {
-            return [
-                'full_name',
-                'nik',
-                'birth_place',
-                'birth_date',
-                'gender',
-                'address',
-                'phone_number',
-                'identity_image_path'
-            ];
-        }
-
-        $missing = [];
-        $guardian = $this->guardian;
-
-        if (!$guardian->full_name)
-            $missing[] = 'full_name';
-        if (!$guardian->nik)
-            $missing[] = 'nik';
-        if (!$guardian->birth_place)
-            $missing[] = 'birth_place';
-        if (!$guardian->birth_date)
-            $missing[] = 'birth_date';
-        if (!$guardian->gender)
-            $missing[] = 'gender';
-        if (!$guardian->address)
-            $missing[] = 'address';
-        if (!$guardian->phone_number)
-            $missing[] = 'phone_number';
-        if (!$guardian->identity_image_path)
-            $missing[] = 'identity_image_path';
-
-        return $missing;
+        return $this->hasMany(Library::class, 'owner_id');
     }
-
-    public function isGuardianComplete(): bool
+    public function ratedLibraries()
     {
-        return count($this->guardianMissingFields()) === 0;
+        return $this->belongsToMany(Library::class, 'library_ratings')
+            ->withPivot('rating')
+            ->withTimestamps();
+    }
+    public function comments()
+    {
+        return $this->hasMany(LibraryComment::class, 'user_id');
+    }
+    public function memberships()
+    {
+        return $this->hasMany(LibraryLibrarian::class, 'user_id');
     }
 }

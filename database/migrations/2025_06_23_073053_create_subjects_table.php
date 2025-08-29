@@ -9,8 +9,12 @@ return new class extends Migration {
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name')->unique();
+            $table->string('name');
+            $table->string('slug');
+
             $table->timestamps();
+            $table->unique(['slug']);
+
         });
     }
     public function down(): void

@@ -13,9 +13,9 @@ class PasswordResetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'otp' => 'required|digits:6',
-            'password' => 'required|string|min:8|confirmed',
+            "email" => "required|email",
+            "otp" => "required|digits:6",
+            "password" => "required|string|min:8|confirmed",
         ];
     }
 }

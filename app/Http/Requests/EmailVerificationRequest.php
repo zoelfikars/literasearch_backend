@@ -13,7 +13,7 @@ class EmailVerificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'platform' => 'required|in:web,mobile',
+            "platform" => "required|in:web,mobile",
         ];
     }
 }

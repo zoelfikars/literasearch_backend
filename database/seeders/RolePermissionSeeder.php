@@ -10,9 +10,9 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         $rolePermissions = [
-            'super_admin' => [
-                'approve_librarian_applications',
-                'approve_membership_applications',
+            'Super Admin' => [
+                'review_library_applications',
+                'review_membership_applications',
                 'manage_own_library',
                 'manage_books',
                 'view_books',
@@ -21,43 +21,29 @@ class RolePermissionSeeder extends Seeder
                 'borrow_digital_books',
                 'rate_books',
                 'wishlist_books',
+                'request_librarian_application',
+                'request_member_application',
             ],
-            'national_librarian' => [
-                'approve_librarian_applications',
-                'approve_membership_applications',
+            'Pustakawan Nasional' => [
+                'review_library_applications',
+            ],
+            'Pustakawan' => [
+                'review_membership_applications',
                 'manage_own_library',
                 'manage_books',
+            ],
+            'User' => [
                 'view_books',
                 'view_libraries',
-                'borrow_physical_books',
-                'borrow_digital_books',
-                'rate_books',
                 'wishlist_books',
             ],
-            'librarian' => [
-                'approve_membership_applications',
-                'manage_own_library',
-                'manage_books',
-                'view_books',
-                'view_libraries',
-                'borrow_physical_books',
+            'Verified' => [
                 'borrow_digital_books',
                 'rate_books',
-                'wishlist_books',
             ],
-            'member' => [
-                'view_books',
-                'view_libraries',
-                'borrow_physical_books',
-                'borrow_digital_books',
-                'rate_books',
-                'wishlist_books',
-            ],
-            'user' => [
-                'view_books',
-                'view_libraries',
-                'borrow_digital_books',
-                'wishlist_books',
+            'Completed Identity' => [
+                'request_librarian_application',
+                'request_member_application',
             ],
         ];
 

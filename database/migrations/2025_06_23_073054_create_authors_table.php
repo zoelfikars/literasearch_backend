@@ -10,9 +10,10 @@ return new class extends Migration {
         Schema::create('authors', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->text('bio')->nullable();
-            $table->date('birth_date')->nullable();
-            $table->date('death_date')->nullable();
+            $table->string('slug');
+            $table->string('disambiguator')->nullable();
+            $table->unique(['slug', 'disambiguator', 'deleted_at']);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

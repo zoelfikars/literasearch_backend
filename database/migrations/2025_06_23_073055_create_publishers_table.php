@@ -10,8 +10,13 @@ return new class extends Migration {
         Schema::create('publishers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('slug_name');
+            $table->string('city');
+            $table->string('slug_city');
             $table->text('address')->nullable();
+
             $table->timestamps();
+            $table->unique(['slug_name','slug_city']);
         });
     }
     public function down(): void

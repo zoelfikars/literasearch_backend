@@ -11,3 +11,12 @@ php artisan install:api
 php artisan migrate:fresh
 php artisan db:seed
 no
+
+
+setup python
+
+bikin venv #python -m venv venv_easyocr 
+activate #./venv_easyocr/Scripts/activate
+
+libraries :
+pip install easyocr opencv-python numpy

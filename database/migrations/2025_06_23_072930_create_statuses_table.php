@@ -11,8 +11,9 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('type');
-            $table->text('description')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
     public function down(): void

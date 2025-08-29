@@ -1,8 +1,10 @@
 <?php
 namespace App\Traits;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 trait ApiResponse
 {
     protected function setResponse(
@@ -16,12 +18,17 @@ trait ApiResponse
             'status' => $status,
             'message' => $message,
         ];
-        if ($data instanceof LengthAwarePaginator) {
+        if ($data instanceof AnonymousResourceCollection && method_exists($data->resource, 'perPage')) {
             $items = $data->items();
             $response['result'] = $items;
-            $response['meta'] = [
+            $currentPage = $data->currentPage();
+            $lastPage = $data->lastPage();
+
+            $response['pagination'] = [
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
+                'next_page' => ($currentPage < $lastPage) ? ($currentPage + 1) : null,
+                'prev_page' => ($currentPage > 1) ? ($currentPage - 1) : null,
                 'per_page' => $data->perPage(),
                 'total' => $data->total(),
             ];
@@ -39,9 +46,14 @@ trait ApiResponse
         $response = [
             'status' => 'error',
             'message' => $message,
+            // 'system_message' => $system_message,
         ];
 
-        if ($system_message !== null) {
+        if ($system_message !== null && $system_message == 'Route [login] not defined.') {
+            $response['message'] .= ', ' . $system_message;
+        }
+
+        if($system_message !== null && $system_message !== '') {
             $response['system_message'] = $system_message;
         }
         return response()->json($response, $code);

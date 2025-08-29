@@ -8,29 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 class LibrarianApplication extends Model
 {
     use HasUuids;
+    protected $keyType = 'string';
+    public $incrementing = false;
     protected $fillable = [
-        'user_id',
         'library_id',
-        'institution_document_path',
+        'user_id',
         'status_id',
-        'verified_by',
-        'verified_at',
-        'rejected_reason',
+        'reviewed_by',
+        'review_notes',
+        'reviewed_at',
     ];
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    public function verifier()
+    public function library()
     {
-        return $this->belongsTo(User::class, 'verified_by');
+        return $this->belongsTo(Library::class);
     }
     public function status()
     {
         return $this->belongsTo(Status::class);
     }
-    public function library()
+    public function reviewer()
     {
-        return $this->belongsTo(Library::class);
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 }

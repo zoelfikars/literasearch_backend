@@ -13,12 +13,12 @@ class EditionSubject extends Model
         'edition_id',
         'subject_id',
     ];
-    public function edition()
+    public function editions()
     {
-        return $this->belongsTo(Edition::class);
+        return $this->belongsTo(Edition::class, 'edition_id');
     }
-    public function subject()
+    public function subjects()
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(Subject::class, 'subject_id');
     }
 }

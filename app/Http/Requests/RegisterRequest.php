@@ -13,10 +13,10 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'platform' => 'required|in:web,mobile',
-            'nickname' => 'nullable|string|max:50',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed|',
+            "platform" => "required|in:web,mobile",
+            "nickname" => "nullable|string|max:50",
+            "email" => "required|email|unique:users,email",
+            "password" => "required|string|min:8|confirmed|",
         ];
     }
 }
