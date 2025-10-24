@@ -17,3 +17,4 @@ yarn-error.log
 /.vscode
 .env
 /python_scripts/venv
+/python_scripts/temp_uploads
