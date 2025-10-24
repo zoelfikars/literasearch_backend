@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             // BookSeeder::class,
             // UserSeeder::class,
             // UserRatingSeeder::class,
-            ClearPrivateFolderSeeder::class, // jangan dipake kalo udah deploy.
+            // ClearPrivateFolderSeeder::class, // jangan dipake kalo udah deploy.
         ]);
     }
 }
