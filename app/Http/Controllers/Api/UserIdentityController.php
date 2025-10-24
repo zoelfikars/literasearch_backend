@@ -43,16 +43,18 @@ class UserIdentityController extends Controller
             $fileName = $user->id . '.' . $file->getClientOriginalExtension();
             $imagePath = $file->storeAs('identity_images', $fileName, 'private');
             $fullImagePath = Storage::disk('private')->path($imagePath);
+            $base = rtrim(env('PYTHON_OCR_API_URL'), '/');
             $response = Http::timeout(60)
+                ->connectTimeout(5)
                 ->withHeaders([
                     'X-API-Key' => env('PYTHON_OCR_API_KEY'),
                 ])
                 ->attach(
                     'identity_image',
-                    file_get_contents($fullImagePath),
+                    fopen($fullImagePath, 'r'),
                     $file->getClientOriginalName()
                 )
-                ->post(env('PYTHON_OCR_API_URL') . '/process-ktp/');
+                ->post($base . '/process-ktp');
             if ($response->successful()) {
                 $ocrResult = $response->json();
                 $ocrResult = $response->json()['data']['ocr_result'] ?? null;
@@ -158,7 +160,7 @@ class UserIdentityController extends Controller
             return $this->setErrorResponse('Anda tidak bisa memperbarui data identitas saat ini.', 403);
         }
 
-        $this->authorize('updateIdentityData', $identity);
+        $this->authorize('update', $identity);
 
         DB::beginTransaction();
         try {
@@ -197,7 +199,7 @@ class UserIdentityController extends Controller
         }
         $identity = $user->identity;
         if ($identity) {
-            $this->authorize('viewIdentityData', $identity);
+            $this->authorize('view', $identity);
             return $this->setResponse('Data identitas pribadi ditemukan.', new IdentityResource($identity));
         }
         $guardian = $user->guardian;
@@ -214,7 +216,7 @@ class UserIdentityController extends Controller
             abort(401);
         }
         $identity = $user->identity;
-        $this->authorize('viewIdentityImage', $identity);
+        $this->authorize('view', $identity);
         $path = $identity->identity_image_path;
         if (!Storage::disk('private')->exists($path)) {
             abort(404);

@@ -11,6 +11,7 @@ class Status extends Model
     use HasFactory, HasUuids;
     protected $fillable = [
         'name',
+        'type',
         'description',
     ];
     protected $keyType = 'string';
@@ -31,4 +32,5 @@ class Status extends Model
     {
         return $this->hasMany(MembershipApplication::class);
     }
+
 }

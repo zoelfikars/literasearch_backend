@@ -17,6 +17,7 @@ class RoleSeeder extends Seeder
             'Member',
             'Verified',
             'Completed Identity',
+            'Blacklist',
         ];
 
         foreach ($role as $item) {

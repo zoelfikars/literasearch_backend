@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('address');
-            $table->string('phone_number', 15);
+            $table->string('phone_number', 15)->nullable();
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
             $table->string('image_path')->nullable();

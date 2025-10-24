@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\ProfileResource;
 use App\Models\User;
 use App\Traits\ApiResponse;
@@ -27,7 +27,7 @@ class ProfileController extends Controller
         $data = new ProfileResource($user);
         return $this->setResponse('Profil pengguna berhasil diambil', $data, 200);
     }
-    public function update(UpdateProfileRequest $request)
+    public function update(ProfileUpdateRequest $request)
     {
         DB::beginTransaction();
         $picture_path = null;

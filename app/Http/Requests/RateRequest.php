@@ -13,7 +13,12 @@ class RateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "rating" => "required|integer|between:1,5",
+            // "rating" => "required|integer|between:1,5",
+            "rating" => [
+                "required",
+                "numeric",
+                "regex:/^(?:[1-4](?:\.5)?|5)$/"
+            ],
         ];
     }
 }

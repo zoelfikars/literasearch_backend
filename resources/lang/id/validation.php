@@ -184,5 +184,7 @@ return [
         // author
         'author_name' => 'Nama Kontributor',
         'disambiguator' => 'Disambiguator',
+        'include_inactive' => 'Termasuk Tidak Aktif',
+        'section' => 'Bagian',
     ],
 ];

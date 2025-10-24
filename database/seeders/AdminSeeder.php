@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
             'nickname' => 'Super Admin',
             'password' => bcrypt(env('SUPER_ADMIN_PASSWORD', 'password')),
             'status_id' => Status::where('type', 'user')->where('name', 'verified')->value('id'),
-            'email_verified_at' => now(),
+            // 'email_verified_at' => now(),
             'is_deleted' => false,
         ]);
         $nationalLibrarian = User::firstOrCreate([
@@ -23,7 +23,7 @@ class AdminSeeder extends Seeder
             'nickname' => 'Pustakawan Nasional',
             'password' => bcrypt(env('NATIONAL_LIBRARIAN_PASSWORD', 'password')),
             'status_id' => Status::where('type', 'user')->where('name', 'verified')->value('id'),
-            'email_verified_at' => now(),
+            // 'email_verified_at' => now(),
             'is_deleted' => false,
         ]);
         $user = User::firstOrCreate([
@@ -31,11 +31,23 @@ class AdminSeeder extends Seeder
             'nickname' => 'Muhamad Zulfikar Fikri',
             'password' => bcrypt('password'),
             'status_id' => Status::where('type', 'user')->where('name', 'verified')->value('id'),
-            'email_verified_at' => now(),
+            // 'email_verified_at' => now(),
             'is_deleted' => false,
         ]);
-        $nationalLibrarian->syncRoles(['Pustakawan Nasional', 'User', 'Verified', 'Pustakawan']);
-        $superAdmin->syncRoles('Super Admin', 'Verified');
-        $user->syncRoles('Verified', 'User');
+        $nationalLibrarian->syncRoles([
+            'Pustakawan Nasional',
+            'User',
+            // 'Verified',
+            'Pustakawan'
+        ]);
+        $superAdmin->syncRoles(
+            'Super Admin',
+            // 'Verified',
+            'User'
+        );
+        $user->syncRoles(
+            // 'Verified',
+            'User'
+        );
     }
 }

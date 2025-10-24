@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Subject;
 use Illuminate\Database\Seeder;
+use Str;
 
 class SubjectSeeder extends Seeder
 {
@@ -19,6 +20,7 @@ class SubjectSeeder extends Seeder
         foreach ($subjects as $subject) {
             Subject::firstOrCreate([
                 'name'=> $subject['name'],
+                'slug' => Str::appSlug($subject['name']),
             ]);
         }
     }

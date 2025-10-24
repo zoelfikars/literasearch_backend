@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('isbn_10')->unique()->nullable();
             $table->string('isbn_13')->unique()->nullable();
             $table->integer('edition_number')->nullable();
-            $table->date('publication_date')->nullable();
+            $table->integer('publication_year')->nullable();
             $table->text('cover')->nullable();
             $table->integer('pages');
             $table->text('subtitle')->nullable();

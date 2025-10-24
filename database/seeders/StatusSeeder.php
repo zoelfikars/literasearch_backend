@@ -12,17 +12,16 @@ class StatusSeeder extends Seeder
         $statuses = [
             ['type' => 'user', 'name' => 'pending_verification', 'description' => 'Akun belum verifikasi'],
             ['type' => 'user', 'name' => 'verified', 'description' => 'Akun sudah verifikasi'],
-            ['type' => 'user', 'name' => 'blacklisted', 'description' => 'Akun diblokir'],
 
-            ['type' => 'library_application', 'name' => 'pending', 'description' => 'Menunggu verifikasi'],
+            ['type' => 'library_application', 'name' => 'pending', 'description' => 'Menunggu disetujui oleh pustakawan nasional'],
             ['type' => 'library_application', 'name' => 'approved', 'description' => 'Pengajuan perpustakaan disetujui'],
             ['type' => 'library_application', 'name' => 'rejected', 'description' => 'Pengajuan perpustakaan ditolak'],
 
-            ['type' => 'librarian_application', 'name' => 'pending', 'description' => 'Menunggu verifikasi'],
+            ['type' => 'librarian_application', 'name' => 'pending', 'description' => 'Menunggu disetujui oleh pemilik pustakawan'],
             ['type' => 'librarian_application', 'name' => 'approved', 'description' => 'Pengajuan menjadi pustakawan disetujui'],
             ['type' => 'librarian_application', 'name' => 'rejected', 'description' => 'Pengajuan menjadi pustakawan ditolak'],
 
-            ['type' => 'membership_application', 'name' => 'pending', 'description' => 'Menunggu verifikasi oleh pustakawan'],
+            ['type' => 'membership_application', 'name' => 'pending', 'description' => 'Menunggu disetujui oleh pustakawan'],
             ['type' => 'membership_application', 'name' => 'approved', 'description' => 'Pengajuan member disetujui'],
             ['type' => 'membership_application', 'name' => 'rejected', 'description' => 'Pengajuan member ditolak'],
 

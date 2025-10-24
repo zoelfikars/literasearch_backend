@@ -1,4 +1,5 @@
 <?php
+use App\Providers\AppServiceProvider;
 use App\Traits\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -15,6 +16,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 return Application::configure(basePath: dirname(__DIR__))
+    ->withProviders([
+        AppServiceProvider::class,
+    ])
     ->withRouting(
         web: __DIR__ . '/../routes/web.php',
         api: __DIR__ . '/../routes/api.php',
@@ -39,7 +43,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'notFound' => 'Data tidak ditemukan',
         ];
         $exceptions->render(function (Throwable $e) use ($messages) {
-            // dd(get_class($e));
             switch (true) {
                 case $e instanceof ValidationException:
                     return ApiResponse::setErrorResponse($e->errors(), 422);
@@ -72,7 +75,7 @@ return Application::configure(basePath: dirname(__DIR__))
                         $prev instanceof ModelNotFoundException
                         || $prev instanceof RecordsNotFoundException
                     ) {
-                        return ApiResponse::setErrorResponse($messages['notFound'] ?? 'Data tidak ditemukan.', 404);
+                        return ApiResponse::setErrorResponse($messages['notFound'] ?? 'Data tidak ditemukan.', 404, $e->getMessage());
                     }
                     return ApiResponse::setErrorResponse($messages['routeNotFound'] ?? 'Endpoint tidak ditemukan.', 404);
                 }

@@ -18,6 +18,8 @@ class LoginResource extends JsonResource
         $user = [
             'id' => $this->id,
             'nickname' => $this->nickname,
+            'email' => $this->email,
+            'roles' => $this->roles->pluck('name')->unique()->values(),
             'permissions' => $this->roles->flatMap(fn($role) => $role->permissions->pluck('name'))->unique()->values(),
         ];
 

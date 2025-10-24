@@ -13,7 +13,7 @@ class EditionRating extends Pivot
     protected $fillable = ['edition_id', 'user_id', 'rating'];
 
     protected $casts = [
-        'rating' => 'integer',
+        'rating' => 'double',
     ];
 
     public function edition()

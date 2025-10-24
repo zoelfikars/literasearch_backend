@@ -13,9 +13,12 @@ class LibraryApplicationExtendRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "library_id" => "required|string",
             "document" => "required|file|mimes:pdf,doc,docx|max:20480",
-            "expiration_date" => "required|date",
+            "expiration_date" => [
+                "required",
+                "date",
+                "after:today",
+            ],
         ];
     }
 }

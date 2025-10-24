@@ -45,7 +45,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function loans()
     {
-        return $this->hasMany(Loan::class);
+        return $this->hasMany(Loan::class, 'user_id', 'id');
+    }
+    public function scopeOverdueLoans($query)
+    {
+        return $query->whereHas('loans', function ($q) {
+            $q->where('due_date', '<', now())
+                ->whereNull('returned_at');
+        });
     }
     public function status()
     {
@@ -65,17 +72,28 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot(['is_active'])
             ->withTimestamps();
     }
-    public function managedLibrariesActive()
+    public function managedLibrariesActive($libraryId = null)
     {
-        return $this->belongsToMany(Library::class, 'library_librarians')
+        $query = $this->belongsToMany(Library::class, 'library_librarians')
             ->withPivot(['is_active'])
             ->wherePivot('is_active', true)
             ->withTimestamps();
-    }
 
+        if ($libraryId) {
+            $query->where('libraries.id', $libraryId);
+        }
+
+        return $query;
+    }
     public function librarianApplications()
     {
         return $this->hasMany(LibrarianApplication::class);
+    }
+    public function librarian()
+    {
+        return $this->belongsToMany(Library::class, 'library_librarians')
+            ->withPivot(['is_active'])
+            ->withTimestamps();
     }
     public function owners()
     {
@@ -95,11 +113,29 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(LibraryComment::class, 'user_id');
     }
-    public function memberships()
+    public function membershipApplications()
     {
-        return $this->hasMany(LibraryLibrarian::class, 'user_id');
+        return $this->hasMany(MembershipApplication::class);
     }
-
+    public function membership()
+    {
+        return $this->belongsToMany(Library::class, 'library_members')
+            ->withPivot([
+                'is_active'
+                // , 'is_blacklist'
+            ])
+            ->withTimestamps();
+    }
+    public function membershipActive()
+    {
+        return $this->belongsToMany(Library::class, 'library_members')
+            ->withPivot([
+                'is_active'
+                // , 'is_blacklist'
+            ])
+            ->wherePivot('is_active', true)
+            ->withTimestamps();
+    }
     public function editionRatings()
     {
         return $this->hasMany(EditionRating::class, 'user_id', 'id');
@@ -108,6 +144,30 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Edition::class, 'edition_ratings', 'user_id', 'edition_id')
             ->withPivot(['rating'])
+            ->withTimestamps();
+    }
+    public function membershipInspector()
+    {
+        return $this->hasMany(MembershipApplication::class, 'inspector_id');
+    }
+    public function librarianInspector()
+    {
+        return $this->hasMany(LibrarianApplication::class, 'inspector_id');
+    }
+    public function wishlist()
+    {
+        return $this->belongsToMany(Edition::class, 'edition_wishlists', 'user_id', 'edition_id')
+            ->withTimestamps();
+    }
+
+    public function readPositions()
+    {
+        return $this->hasMany(EditionReadPosition::class);
+    }
+    public function readingEditions()
+    {
+        return $this->belongsToMany(Edition::class, 'edition_read_positions')
+            ->withPivot(['locator_type', 'page', 'cfi', 'progress_percent', 'last_opened_at'])
             ->withTimestamps();
     }
 

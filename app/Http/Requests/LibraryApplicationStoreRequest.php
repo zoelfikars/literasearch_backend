@@ -16,7 +16,11 @@ class LibraryApplicationStoreRequest extends FormRequest
             "name" => "required|string|max:255",
             "description" => "nullable|string",
             "address" => "required|string",
-            "phone" => ["required", "string", "regex:/^08[0-9]{9,11}$/"],
+            "phone" => [
+                "nullable",
+                "string",
+                "regex:/^(?:08[0-9]{8,11}|\+628[0-9]{8,11}|0[2-7][0-9]{7,10})$/",
+            ],
             "latitude" => "required|numeric",
             "longitude" => "required|numeric",
             "document" => "required|file|mimes:pdf,doc,docx|max:20480",

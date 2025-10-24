@@ -13,15 +13,15 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->uuid('library_id');
             $table->uuid('status_id');
-            $table->uuid('reviewed_by')->nullable();
-            $table->timestamp('reviewed_at')->nullable();
-            $table->text('rejected_reason')->nullable();
+            $table->uuid('inspector_id')->nullable();
+            $table->timestamp('inspected_at')->nullable();
+            $table->text('rejection_reason')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('library_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('status_id')->references('id')->on('statuses');
-            $table->foreign('reviewed_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('inspector_id')->references('id')->on('users')->onDelete('set null');
             $table->softDeletes();
         });
     }

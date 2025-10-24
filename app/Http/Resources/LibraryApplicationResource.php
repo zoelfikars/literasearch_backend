@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\URL;
 
 class LibraryApplicationResource extends JsonResource
 {
@@ -12,40 +11,37 @@ class LibraryApplicationResource extends JsonResource
     {
         $data = [
             'id' => $this->id,
-            'library' => $this->whenLoaded('library', function () {
-                return new DetailLibraryResource($this->library);
-            }),
-            'status' => $this->whenLoaded('status', function () {
-                return $this->status->description;
-            }),
-            'applicant' => $this->whenLoaded('user', function () {
-                if ($this->user->identity == null) {
-                    return null;
-                }
-                return new IdentityResource($this->user->identity);
-            }),
-            'reviewer' => $this->whenLoaded('reviewer', function () {
-                return [
-                    'id' => $this->reviewer->id,
-                    'name' => $this->reviewer->nickname,
-                    'reviewed_at' => format_time($this->updated_at),
-                ];
-            }),
-            'document' => $this->document_path
-                ? URL::signedRoute(
-                    'api.libraries.applications.document',
-                    ['application' => $this],
-                    now()->addMinutes(10)
+            'library' => $this->relationLoaded('library')
+                ? new LibraryDetailResource($this->library)
+                : null,
+            'status' => $this->relationLoaded('status')
+                ? new StatusResource($this->status)
+                : null,
+            'applicant' => $this->relationLoaded('user')
+                ? (
+                    $this->user && $this->user->identity
+                    ? new IdentityResource($this->user->identity)
+                    : null
                 )
                 : null,
-
+            'document' => $this->document_path
+                ? $this->document_signed_url
+                : null,
+            'inspector' => $this->relationLoaded('inspector')
+                ? (
+                    $this->inspector
+                    ? [
+                        'id' => $this->inspector->id,
+                        'nickname' => $this->inspector->nickname,
+                        'inspected_at' => optional($this->inspector->inspected_at)
+                            ->toIso8601String(),
+                    ]
+                    : null
+                )
+                : null,
+            'expiration_date' => optional($this->expiration_date)->toIso8601String(),
+            'rejection_reason' => $this->rejection_reason,
         ];
-        if ($this->expiration_date != null) {
-            $data['expiration_date'] = format_date($this->expiration_date);
-        }
-        if ($this->rejected_reason != null) {
-            $data['rejected_reason'] = $this->rejected_reason;
-        }
         return $data;
     }
 }

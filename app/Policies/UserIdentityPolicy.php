@@ -1,47 +1,61 @@
 <?php
-
 namespace App\Policies;
-
 use App\Models\LibrarianApplication;
 use App\Models\LibraryApplication;
+use App\Models\LibraryMember;
+use App\Models\Loan;
 use App\Models\MembershipApplication;
 use App\Models\User;
 use App\Models\UserIdentity;
-use App\Traits\ApiResponse;
-
 class UserIdentityPolicy
 {
-    use ApiResponse;
-    public function updateIdentityData(User $loggedInUser, UserIdentity $userIdentity)
+    public function before(User $user, $ability)
     {
-        return $loggedInUser->id === $userIdentity->user_id;
+        if ($user->hasRole('Super Admin')) {
+            return true;
+        }
     }
-    public function viewIdentityData(User $loggedInUser, UserIdentity $userIdentity)
+    public function update(User $actor, UserIdentity $identity)
     {
-        return $loggedInUser->id === $userIdentity->user_id || $loggedInUser->hasRole('Pustakawan Nasional') || $loggedInUser->hasRole('Super Admin');
+        $hasBlacklistRole = $actor->hasRole('Blacklist');
+        $overdueStatusLoans = $actor->loans()
+            ->whereNull('returned_at')
+            ->loanStatus('overdue')
+            ->exists();
+        $overdueApprovedLoans = $actor->loans()
+            ->whereNull('returned_at')
+            ->loanStatus('approved')
+            ->exists();
+        if ($hasBlacklistRole || $overdueStatusLoans || $overdueApprovedLoans) {
+            return false;
+        }
+        return $actor->id === $identity->user_id;
     }
-    public function viewIdentityImage(User $actor, UserIdentity $identity)
+    public function view(User $actor, UserIdentity $identity)
     {
         if ($actor->id === $identity->user_id) {
             return true;
         }
-        if ($actor->hasRole('Super Admin')) {
-            return true;
-        }
-        $owner = $identity->user()->with('status')->first();
-        $isBlacklisted = $owner?->status
-            && $owner->status->type === 'user'
-            && $owner->status->name === 'blacklisted';
-        if ($isBlacklisted && ($actor->hasRole('Pustakawan') || $actor->hasRole('Pustakawan Nasional'))) {
-            return true;
-        }
-
         if ($actor->hasRole('Pustakawan')) {
-            $managedLibraryIds = $actor->managedLibraries()
-                ->wherePivot('is_active', true)
-                ->pluck('id');
+            $managedLibraryIds = $actor->managedLibrariesActive()
+                ->pluck('libraries.id');
             if ($managedLibraryIds->isNotEmpty()) {
-                $exists = LibrarianApplication::query()
+                $existsMembershipPending = MembershipApplication::query()
+                    ->where('user_id', $identity->user_id)
+                    ->whereIn('library_id', $managedLibraryIds)
+                    ->whereHas('status', function ($q) {
+                        $q->where('type', 'membership_application')
+                            ->where('name', 'pending');
+                    })
+                    ->exists();
+                if ($existsMembershipPending) {
+                    return true;
+                }
+                $blacklisted = $identity->user->hasRole('Blacklist');
+                if ($blacklisted) {
+                    return true;
+                }
+                $existsLibraryAppPending = LibrarianApplication::query()
                     ->where('user_id', $identity->user_id)
                     ->whereIn('library_id', $managedLibraryIds)
                     ->whereHas('status', function ($q) {
@@ -49,20 +63,32 @@ class UserIdentityPolicy
                             ->where('name', 'pending');
                     })
                     ->exists();
-                if ($exists) {
+                if ($existsLibraryAppPending) {
                     return true;
                 }
+                $existLoanPending = Loan::query()
+                    ->where('user_id', $identity->user_id)
+                    ->whereIn('library_id', $managedLibraryIds)
+                    ->whereHas('status', function ($q) {
+                        $q->where('type', 'loan')
+                            ->where('name', 'pending');
+                    })
+                    ->exists();
+                if ($existLoanPending) {
+                    return true;
+                }
+
             }
         }
         if ($actor->hasRole('Pustakawan Nasional')) {
-            $exists = LibraryApplication::query()
+            $existsLibraryAppPending = LibraryApplication::query()
                 ->where('user_id', $identity->user_id)
                 ->whereHas('status', function ($q) {
                     $q->where('type', 'library_application')
                         ->where('name', 'pending');
                 })
                 ->exists();
-            if ($exists) {
+            if ($existsLibraryAppPending) {
                 return true;
             }
         }

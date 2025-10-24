@@ -12,8 +12,9 @@ return new class extends Migration {
             $table->uuid('user_id')->index();
             $table->uuid('library_id')->index();
             $table->uuid('status_id')->index();
-            $table->uuid('reviewed_by')->nullable()->index();
-            $table->text('rejected_reason')->nullable();
+            $table->uuid('inspector_id')->nullable()->index();
+            $table->uuid('inspected_at')->nullable()->index();
+            $table->text('rejection_reason')->nullable();
             $table->date('expiration_date');
             $table->string('document_path')->nullable();
             $table->timestamps();
@@ -21,7 +22,7 @@ return new class extends Migration {
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('library_id')->references('id')->on('libraries')->cascadeOnDelete();
             $table->foreign('status_id')->references('id')->on('statuses')->cascadeOnDelete();
-            $table->foreign('reviewed_by')->references('id')->on('users')->nullOnDelete();
+            $table->foreign('inspector_id')->references('id')->on('users')->nullOnDelete();
             $table->softDeletes();
         });
     }

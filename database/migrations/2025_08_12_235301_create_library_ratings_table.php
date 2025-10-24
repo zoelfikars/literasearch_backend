@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('library_ratings', function (Blueprint $table) {
             $table->uuid('library_id');
             $table->uuid('user_id');
-            $table->tinyInteger('rating');
+            $table->decimal('rating', 3, 1)->default(1.0);
             $table->timestamps();
 
             $table->unique(['library_id', 'user_id']);

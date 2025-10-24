@@ -11,9 +11,7 @@ class LanguageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->english_name,
-            'iso_code' => $this->iso_639_1 ?? $this->iso_639_3,
-            'direction' => $this->direction,
+            'name' => ($this->english_name ?? '') . ' (' . ($this->iso_639_1 ?? $this->iso_639_3 ?? '') . ')',
         ];
     }
 }

@@ -5,16 +5,19 @@ namespace Database\Seeders;
 use App\Models\Author;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Str;
 
 class AuthorSeeder extends Seeder
 {
     public function run(): void
     {
+        $name = 'Pramoedya Ananta Toer';
+        $slug = Str::appSlug($name);
+        $disambiguator = '2006-04-30';
         Author::create([
-            'name' => 'Pramoedya Ananta Toer',
-            'bio' => 'Sastrawan legendaris Indonesia yang dikenal luas lewat karya seperti "Bumi Manusia".',
-            'birth_date' => '1925-02-06',
-            'death_date' => '2006-04-30',
+            'name' => $name,
+            'slug' => $slug,
+            'disambiguator' => $disambiguator,
         ]);
     }
 }
