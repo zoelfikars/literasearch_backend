@@ -43,11 +43,11 @@ class UserIdentityController extends Controller
             $fileName = $user->id . '.' . $file->getClientOriginalExtension();
             $imagePath = $file->storeAs('identity_images', $fileName, 'private');
             $fullImagePath = Storage::disk('private')->path($imagePath);
-            $base = rtrim(env('PYTHON_OCR_API_URL'), '/');
+            $base = rtrim(env('PYTHON_OCR_API_URL', config('app.python_ocr_api_url', 'http://127.0.0.1:8001')), '/');
             $response = Http::timeout(60)
                 ->connectTimeout(5)
                 ->withHeaders([
-                    'X-API-Key' => env('PYTHON_OCR_API_KEY'),
+                    'X-API-Key' => env('PYTHON_OCR_API_KEY', 'super_secret_python_key_123abcXYZ'),
                 ])
                 ->attach(
                     'identity_image',
