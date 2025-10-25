@@ -124,7 +124,7 @@ class UserIdentityController extends Controller
                     Storage::disk('private')->delete($imagePath);
                 }
                 $errorData = $response->json();
-                $errorMessage = $errorData['detail'] ?? 'Terjadi kesalahan tidak diketahui dari API OCR.';
+                $errorMessage = $errorData['detail']['message'] ?? 'Terjadi kesalahan tidak diketahui dari API OCR.';
                 return $this->setErrorResponse($errorMessage, 500, $response->json());
             }
         } catch (ConnectionException $e) {
