@@ -86,7 +86,10 @@ return [
 
     'frontend_url' => env('APP_FRONTEND_URL', 'http://localhost:8000'),
     'app_deeplink' => env('APP_APP_DEEPLINK', 'literasearch://verify-email'),
-    'python_ocr_api_url' => env('APP_PYTHON_OCR_API_URL', 'http://127.0.0.1:8001'),
+    'python_ocr_api' => [
+        'url' => env('PYTHON_OCR_API_URL', 'http://127.0.0.1:8001'),
+        'key' => env('PYTHON_OCR_API_KEY', 'no_key_provided'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
