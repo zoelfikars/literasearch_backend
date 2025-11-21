@@ -14,8 +14,8 @@ class LibraryListService
         $perPage = (int) $request->get('per_page', 15);
         $order = strtolower($request->get('order', 'desc')) === 'desc' ? 'desc' : 'asc';
         $sort = $request->get('sort', 'id');
-        $lat = (float) $request->get('latitude');
-        $lng = (float) $request->get('longitude');
+        $lat = (float) $request->get('latitude', 0);
+        $lng = (float) $request->get('longitude', 0);
         $editionId = $book?->id;
 
         $q = Library::query()
