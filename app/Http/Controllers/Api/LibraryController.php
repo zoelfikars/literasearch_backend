@@ -31,9 +31,8 @@ class LibraryController extends Controller
 {
     use ApiResponse;
     use AuthorizesRequests;
-    function list(Request $request, LibraryListService $service)
+    function list(LibraryFilterRequest $request, LibraryListService $service)
     {
-        dd($request->header('Content-Type'), $request->all(), file_get_contents('php://input'));
         $user = $request->user('sanctum');
         $libraries = $service->list($request, $user);
         $data = LibraryResource::collection($libraries);
