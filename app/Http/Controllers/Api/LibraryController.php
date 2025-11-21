@@ -33,6 +33,7 @@ class LibraryController extends Controller
     use AuthorizesRequests;
     function list(Request $request, LibraryListService $service)
     {
+        dd($request->header('Content-Type'));
         dd($request->all());
         $user = $request->user('sanctum');
         $libraries = $service->list($request, $user);
