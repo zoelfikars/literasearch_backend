@@ -31,7 +31,7 @@ class LibraryController extends Controller
 {
     use ApiResponse;
     use AuthorizesRequests;
-    function list(LibraryFilterRequest $request, LibraryListService $service)
+    function list(Request $request, LibraryListService $service)
     {
         dd($request->all());
         $user = $request->user('sanctum');
