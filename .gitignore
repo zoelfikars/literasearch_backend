@@ -16,5 +16,6 @@ yarn-error.log
 /.idea
 /.vscode
 .env
+.env copy
 /python_scripts/venv
 /python_scripts/temp_uploads
