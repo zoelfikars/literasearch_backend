@@ -174,8 +174,6 @@ class Edition extends Model
             ->withPivot(['author_id'])
             ->withTimestamps();
     }
-
-
     public function writers()
     {
         return $this->belongsToMany(Author::class, 'edition_authors', 'edition_id', 'author_id')
